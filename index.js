@@ -15,6 +15,7 @@ function sanitizeFilename(name){
 }
 function trim(str) { return str.replace(/^\s+/, "" ).replace(/\s+$/, "" ); }
 function elapsed(start, end) { return (end - start)/1000; }
+function isPassed(obj) { return obj.status === "passed"; }
 function isFailed(obj) { return obj.status === "failed"; }
 function isSkipped(obj) { return obj.status === "pending"; }
 function isDisabled(obj) { return obj.status === "disabled"; }
@@ -163,6 +164,7 @@ function Jasmine2HTMLReporter(options) {
         suite._specs = [];
         suite._suites = [];
         suite._failures = 0;
+		suite._passed = 0;
         suite._skipped = 0;
         suite._disabled = 0;
         suite._parent = currentSuite;
@@ -190,6 +192,7 @@ function Jasmine2HTMLReporter(options) {
         if (isSkipped(spec)) { spec._suite._skipped++; }
         if (isDisabled(spec)) { spec._suite._disabled++; }
         if (isFailed(spec)) { spec._suite._failures++; }
+		if (isPassed(spec)) { spec._suite._passed++; }
         totalSpecsExecuted++;
 
         //Take screenshots taking care of the configuration
@@ -311,7 +314,8 @@ function Jasmine2HTMLReporter(options) {
         html += '<ul class="stats">';
         html += '<li>Tests: <strong>' + suite._specs.length + '</strong></li>';
         html += '<li>Skipped: <strong>' + suite._skipped + '</strong></li>';
-        html += '<li>Failures: <strong>' + suite._failures + '</strong></li>';
+        html += '<li>Passed: <strong>' + suite._passed + '</strong></li>';
+		html += '<li>Failures: <strong>' + suite._failures + '</strong></li>';
         html += '</ul> </header>';
 
         for (var i = 0; i < suite._specs.length; i++) {
